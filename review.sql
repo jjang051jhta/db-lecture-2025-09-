@@ -105,7 +105,29 @@ SELECT instr('hello oracle','l',5) FROM dual; -- 5번째 글자 이후에 나오
 SELECT instr('hello oracle lol','l',-1) FROM dual; --뒤에서 부터 찾기
 SELECT instr('hello oracle lol','f') FROM dual;
 
---abcd.pdf에서 filename 찾기
+--abcd.pdf에서 filename 찾기, 확장자 찾기
+SELECT substr('abcd.pdf',1,instr('abcd.pdf','.',-1)-1) AS filename ,
+       substr('abcd.pdf',instr('abcd.pdf','.',-1)+1) AS extension
+FROM dual;
+
+
+SELECT rpad('210101-',14,'*') FROM dual; --오른쪽 채우기
+SELECT lpad('210101-',14,'*') FROM dual; --왼쪽 채우기
+SELECT concat(empno,ename),empno||ename AS empno_ename FROM emp;     --문자열 합치기
+SELECT '     abc    ', ltrim('     abc    ') AS ltrim,
+                       rtrim('     abc    ') AS rtrim,
+                       trim('     abc    ') AS trim  FROM emp;     --공백제거
+                       
+SELECT '     abc    ', trim(LEADING FROM '     abc    ') AS ltrim,
+                       trim(TRAILING FROM '     abc    ') AS rtrim,
+                       trim(BOTH FROM '     abc    ') AS trim  FROM emp;     --공백제거
+
+
+
+
+
+
+
 
 
 
