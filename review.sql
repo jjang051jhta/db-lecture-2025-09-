@@ -176,7 +176,51 @@ HAVING avg(sal) > 2000;
 SELECT sum(sal),avg(sal), max(sal), min(sal) FROM emp
 WHERE sal > 2000;
 
+-- join  가로확장  세로확장쉬운데 가로 확장은 어렵다.
+SELECT * FROM emp;
+SELECT * FROM dept;
+--ansi join
+SELECT e.empno,e.ename,e.job,e.sal,deptno,d.dname,d.loc 
+FROM emp e NATURAL JOIN dept d;  --알아서 같은 컬럼을 찾음
 
+--등가 조인
+SELECT e.empno,e.ename,e.job,e.sal,e.deptno,d.dname,d.loc 
+FROM emp e JOIN dept d ON e.deptno = d.deptno;  --inner는 생략 가능하다.
+
+--비등가 조인
+SELECT e.empno,e.ename,e.job,e.sal,e.deptno,e.sal,s.grade 
+FROM emp e JOIN salgrade s ON e.sal BETWEEN s.losal AND s.hisal;  --inner는 생략 가능하다.
+
+--outer join
+SELECT e.empno,e.ename,e.job,e.sal,d.deptno, d.dname,d.loc 
+FROM emp e RIGHT OUTER JOIN dept d ON e.deptno = d.deptno;
+
+SELECT e.empno,e.ename,e.job,e.sal,d.deptno, d.dname,d.loc 
+FROM dept d FULL OUTER JOIN emp e ON e.deptno = d.deptno;
+
+--안쓴다 이거 썼다가는 망하는 수가 있다.  카타시안곱으로 출력된다.
+SELECT e.empno,e.ename,e.job,e.sal,d.deptno, d.dname,d.loc 
+FROM dept d CROSS JOIN emp e;
+
+-- emp 테이블에서 job이 'CLERK'인 직원의 이름과 부서명을 출력하세요. 
+-- 부서 정보는 dept 테이블에서 가져오세요.
+SELECT e.empno,e.ename,e.job, d.dname,d.loc FROM emp e
+JOIN dept d ON e.deptno = d.deptno
+WHERE job = 'CLERK';
+
+-- emp 테이블과 dept 테이블을 INNER JOIN하여 각 부서별로 직원 수를 출력하세요.
+SELECT d.dname,count(*) AS count FROM emp e
+JOIN dept d ON e.deptno = d.deptno
+GROUP BY d.dname;
+
+--join을 잘할려면 설계를 잘해야하고...내부 구조를 잘파악하고 있어야 한다.
+
+-- emp, salgrade,dept join을 해서 매니저 번호와 매니지 이름, 부서명, 부서번호, 급여 등급 출력
+-- 없는 경우도 다 출력...
+SELECT e.empno,e.ename, e.mgr,e.sal, d.deptno, s.grade, e.mgr, e2.ename 
+FROM emp e RIGHT JOIN dept d ON e.deptno = d.deptno
+           LEFT JOIN salgrade s ON e.sal BETWEEN s.losal AND s.hisal
+           LEFT JOIN emp e2 ON e.mgr = e2.empno;
 
 
 
