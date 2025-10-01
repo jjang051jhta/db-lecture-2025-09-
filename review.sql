@@ -274,6 +274,9 @@ values(9999,'홍길동',3200, NULL,to_date('2025-09-30','YYYY-MM-DD'),NULL,20);
 SELECT * FROM emp_temp;
 COMMIT;
 
+
+-- table lock이 있고 
+-- row lock이 있다.
 UPDATE emp_temp SET hiredate = sysdate WHERE empno = 9999;
 SELECT * FROM emp_temp;
 ROLLBACK ;
@@ -285,16 +288,71 @@ COMMIT;
 --rollback , commit
 
 
+-- ROW lock은 같은 row에 동시에 접근을 할떄 lock이 걸린다. update,delete,insert할때 발생한다.
+LOCK TABLE emp_temp IN EXCLUSIVE MODE; --무시해도 된다.
+--transaction   일의 한 묶음  접근을 막는다. row에 lock이 생긴다.
+--insert , update, delete구문을 쓰면 자동으로 row lock이 걸린다.
+--다른데서 접근이 안된다. commit, rollback을 통해 lock을 해제할 수 있다
+-- ddl data definition language create,drop, alter 등등
+DROP TABLE emp_ddl;
+CREATE TABLE emp_ddl (
+	empno number(4),
+	ename varchar2(10),
+	job varchar2(10),
+	mgr number(4),
+	hiredate date,
+	sal number(7,2), 
+	comm number(7,2),
+	deptno number(2)	
+);
+ALTER TABLE  emp_ddl 
+ADD hp varchar2(20); --컬럼 추가
 
+ALTER TABLE  emp_ddl 
+RENAME COLUMN hp TO tel; --컬럼 이름 바꾸기
 
+ALTER TABLE emp_ddl
+MODIFY empno number(5);
 
+ALTER TABLE emp_ddl
+DROP COLUMN tel;
 
+RENAME emp_ddl TO emp_rename;
 
+SELECT * FROM emp_rename;
+
+DROP TABLE emp_rename;
 	
+CREATE TABLE emp_ddl (
+	empno number(4),
+	ename varchar2(10),
+	job varchar2(10),
+	mgr number(4),
+	hiredate date,
+	sal number(7,2), 
+	comm number(7,2),
+	deptno number(2)	
+);
+--bigo 추가 varchar2(20)
+--이름을 remark 바꾸기
+--타입도 바꿔보기 varchar2(20)
+ALTER TABLE emp_ddl
+ADD bigo varchar2(20);
 
+ALTER TABLE emp_ddl
+RENAME COLUMN bigo TO remark;
 
+ALTER TABLE emp_ddl
+MODIFY remark varchar2(30);
 
+ALTER TABLE emp_ddl
+DROP COLUMN remark;
 
+RENAME emp_ddl  TO emp_aaa; --테이블의 이름 바꾸기
+
+DROP TABLE emp_aaa;
+
+SELECT * FROM emp_ddl;
 
 
 
