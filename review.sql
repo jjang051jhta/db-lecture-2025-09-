@@ -356,6 +356,113 @@ SELECT * FROM emp_ddl;
 
 
 
+--무결성이 깨지면 안됨..
+CREATE TABLE members  (
+	userid varchar2(100) CONSTRAINT members_userid_pk PRIMARY KEY,
+	userpw varchar2(100) CONSTRAINT members_userpw_nn NOT NULL,
+	regdate DATE,
+	email varchar2(100)  CONSTRAINT members_email_unq unique
+);
+
+CREATE TABLE members02  (
+	userid varchar2(100),
+	userpw varchar2(100),
+	regdate DATE,
+	email varchar2(100),
+    CONSTRAINT members_userid_pk02 PRIMARY KEY (userid),
+    CONSTRAINT members_email_unq02 UNIQUE (email),
+    CONSTRAINT members_userpw_nn02 CHECK (userpw IS NOT NULL)
+);
+CREATE TABLE board  (
+	boardid number(5),
+	title varchar2(4000),
+	content clob,
+	regdate DATE,
+	writer varchar2(100),
+	hit NUMBER,
+    CONSTRAINT board_boardid_pk PRIMARY KEY (boardid),
+    CONSTRAINT board_writer_fk FOREIGN KEY (writer) REFERENCES members02(userid)
+);
+--quiz board table 
+--     boardid number(5) primary key ,
+--     title varchar2(4000),
+--     content clob,
+--     regdate date,
+--     writer varchar2(100),  레퍼런스 member에 userid,
+--     hit number
+--     insert 해보기
+
+INSERT INTO members02 values('aaa','1234',sysdate,'aaa@aaa.com');
+INSERT INTO board values(2,'제목02','내용02',sysdate,'aaa',1);
+
+SELECT * FROM members02;
+
+
+
+-- 상품은 product_id로 식별되고, 상품명은 같은 걸로 여러 개 만들 수 있다.
+-- 주문은 order_id로 식별된다.
+-- 주문 상세는 한 주문 내에서 product_id가 중복되면 안 된다. (복합 유니크)
+-- 수량은 1개 이상이어야 한다.
+-- 주문 상세는 반드시 존재하는 주문과 상품을 참조해야 한다.
+
+-- 제품테이블 , 주문테이블, 주문상세테이블
+
+CREATE TABLE products02 (
+	product_id number(10),
+	name varchar2(1000) CONSTRAINT products_name_nn02 NOT NULL,
+	price number(10,2) CONSTRAINT products_price_chk02 CHECK(price >= 0),
+	CONSTRAINT products_productid_pk02 PRIMARY KEY (product_id)
+);
+INSERT INTO products02 VALUES (1, 'computer',1000000);
+INSERT INTO products02 VALUES (2, 'monitor',300000);
+INSERT INTO products02 VALUES (3, 'keyboard',10000);
+
+
+--status 여기에 준비중,결제완료,취소
+CREATE TABLE orders02 (
+	order_id number(10),
+	order_date DATE DEFAULT sysdate, --안쓰면 현재 날짜
+	status varchar2(30) DEFAULT '준비중' 
+	CONSTRAINT order_status_chk02 CHECK (status IN ('준비중','결제완료','취소')),
+	CONSTRAINT orders_orderid_pk02 PRIMARY KEY (order_id)
+);
+
+-- java  enum
+INSERT INTO orders02 VALUES (1001, sysdate,'준비중');
+INSERT INTO orders02 VALUES (1002, sysdate,'취소');
+INSERT INTO orders02 VALUES (1003, sysdate,'결제완료');
+
+
+--primary key가 하나만 있으란 법은 없다. 만약에 복합키를 primary key는 table 단위에서의 제약조건으로만 가능하다.
+CREATE TABLE order_items02 (
+	order_id number(10),
+	product_id number(10),
+	quantity number(10) CONSTRAINT orderitems_quantity_chk02 CHECK (quantity >= 1),
+	total_price number(10,2) CONSTRAINT orderitems_totalprice_chk02 CHECK (total_price >= 0),
+    CONSTRAINT orderitems_pk02 PRIMARY KEY (order_id,product_id),
+	CONSTRAINT orderitems_orderid_fk02 FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE cascade, --삭제할때 연결된걸 같이 지워라
+    CONSTRAINT orderitems_productid_fk02 FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+INSERT INTO order_items02 VALUES (1001,1,2,9900);
+INSERT INTO order_items02 VALUES (1001,2,1,9900);
+INSERT INTO order_items02 VALUES (1002,1,2,9900);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
