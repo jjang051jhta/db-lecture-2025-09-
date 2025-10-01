@@ -123,6 +123,66 @@ SELECT '     abc    ', trim(LEADING FROM '     abc    ') AS ltrim,
                        trim(BOTH FROM '     abc    ') AS trim  FROM emp;     --공백제거
 
 
+--
+SELECT round(1234.5678) ,
+       round(1234.5678,1) ,
+       round(1234.5678,2) ,
+       round(1234.5678,-1),
+       ceil(1234.5678),
+       floor(1234.5678),
+       MOD(99,4)
+FROM dual;
+
+SELECT sysdate AS today,
+       sysdate+1 AS tomorrow,
+       sysdate-1 AS yesterday,
+       sysdate+30 AS "one MONTH later",
+       add_months(sysdate,1) AS "one MONTH later"
+FROM dual;
+
+SELECT to_char(sysdate,'YYYY-MM-DD DAY HH:MI:SS', 'NLS_DATE_LANGUAGE=KOREAN') 
+FROM dual;
+
+--글자를 날짜형태로 바꾸어 넣기
+SELECT to_date('2025-10-01', 'YYYY-MM-DD') FROM dual;
+SELECT to_date('2025/10/01', 'YYYY/MM/DD') FROM dual;
+
+--null 처리 함수  nvl(), nvl2()
+SELECT ename,comm,nvl(comm,0),nvl2(comm,'o','x') FROM emp;
+
+--case when then  switch
+SELECT empno,ename,job,sal ,
+CASE job 
+	WHEN 'MANAGER' THEN sal*1.1
+	WHEN 'CLERK' THEN sal*1.5
+	ELSE sal*1.25
+END AS upsal
+FROM emp;
+
+-- 다중행 함수
+SELECT  sum(sal) AS sum FROM emp;
+SELECT  sum(comm) AS sum FROM emp; --null은 제외
+SELECT  count(sal) AS count FROM emp; --null은 제외
+SELECT  count(comm) AS count FROM emp; --null은 제외
+SELECT  max(sal) AS max,min(sal) AS min, max(sal) - min(sal) AS diff FROM emp; --null은 제외
+SELECT  avg(sal) AS abg_sal FROM emp; --null은 제외
+
+--group by일때는 where 절을 쓸 수 없다. having 을 쓰면 된다.
+SELECT deptno,sum(sal),avg(sal), max(sal), min(sal) FROM emp
+GROUP BY deptno
+HAVING avg(sal) > 2000;
+
+--group by를 쓰지 않으면 where를 쓸 수 있다.
+SELECT sum(sal),avg(sal), max(sal), min(sal) FROM emp
+WHERE sal > 2000;
+
+
+
+
+
+
+
+	
 
 
 
