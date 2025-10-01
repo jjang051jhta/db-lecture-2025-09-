@@ -81,7 +81,48 @@ SELECT * FROM emp WHERE sal BETWEEN 2000 AND 3000 ORDER BY sal;
 SELECT * FROM emp WHERE deptno NOT IN (10,20) ORDER BY deptno, sal DESC;
 SELECT * FROM emp WHERE sal NOT BETWEEN 2000 AND 3000 ORDER BY sal;
 
---
+--like
+SELECT * FROM emp WHERE ename LIKE 'S%'; --ename이 S로 시작하는 모든 사람
+SELECT * FROM emp WHERE ename LIKE '%S%'; --ename이 S가 들어가는 모든 사람
+SELECT * FROM emp WHERE ename LIKE '_____'; --ename이 다섯글자인 모든 사람
+SELECT * FROM emp WHERE ename LIKE '____S'; --ename이 다섯글자인 모든 사람
+
+SELECT * FROM emp WHERE comm IS NULL; -- null은 = 로 비교 불가
+SELECT * FROM emp WHERE comm IS NOT NULL; -- null은 = 로 비교 불가
+
+
+--단일행 함수 single row function vs group function 
+SELECT lower(ename) AS lower_ename,upper(ename) AS upper_ename,initcap(ename) AS initcap_ename FROM emp;
+SELECT * FROM emp WHERE lower(ename) LIKE lower('%s%');
+SELECT ename , length(ename) FROM emp WHERE LENGTH(ename) >= 5;
+SELECT '한글', length('한글'), lengthb('한글'), 'abc',length('abd'), lengthb('abc') FROM dual;
+SELECT 'oracle', substr('oracle',1,2) FROM dual;
+SELECT ename, substr(ename,1,2) FROM emp;
+SELECT substr('210101-1234567',1,6) AS birth FROM dual;
+SELECT substr('210101-1234567',-7) AS birth FROM dual;
+SELECT instr('oracle','r') FROM dual; --r이 처음 등장하는 자릿수
+SELECT instr('hello oracle','l',5) FROM dual; -- 5번째 글자 이후에 나오는 l의 자릿수
+SELECT instr('hello oracle lol','l',-1) FROM dual; --뒤에서 부터 찾기
+SELECT instr('hello oracle lol','f') FROM dual;
+
+--abcd.pdf에서 filename 찾기
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
 
 
 
