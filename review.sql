@@ -222,6 +222,70 @@ FROM emp e RIGHT JOIN dept d ON e.deptno = d.deptno
            LEFT JOIN salgrade s ON e.sal BETWEEN s.losal AND s.hisal
            LEFT JOIN emp e2 ON e.mgr = e2.empno;
 
+-- 사원이 없는 부선 명과 부서번호 empno 출력
+
+SELECT e.empno,e.ename,e.job, d.dname,d.loc FROM emp e
+RIGHT JOIN dept d ON e.deptno = d.deptno
+WHERE ename is NULL;
+
+
+--subquery  쿼리안에 쿼리 또 쓰기....
+SELECT * FROM emp WHERE sal > 2975;
+SELECT sal FROM emp WHERE ename = 'JONES';
+
+SELECT * FROM emp WHERE sal > (SELECT sal FROM emp WHERE ename = 'JONES');
+
+--scott입사일이 빠른 사람.
+SELECT hiredate FROM emp WHERE ename = 'SCOTT';
+SELECT * FROM emp 
+WHERE hiredate < (SELECT hiredate FROM emp WHERE ename = 'SCOTT');
+
+
+--jones보다 급여받는 사람 출력
+--부서별 최고 급여 받는 사람...
+SELECT max(sal) FROM emp GROUP BY deptno;
+SELECT * FROM emp WHERE sal IN (2850,3000,5000);
+
+--서브쿼리를 사용하는 이유 
+--서버에서 db연결할때 비용이 발생한다.
+SELECT * FROM emp WHERE sal IN (
+	SELECT max(sal) FROM emp GROUP BY deptno
+);
+
+-- any, some ==  하나라도 만족하면 true, all == 싹다 만족하면 true
+-- 부서별 최고 급여보다 큰사람 출력
+SELECT * FROM emp WHERE sal >= ANY(SELECT max(sal) FROM emp GROUP BY deptno);
+SELECT * FROM emp WHERE sal <= some(SELECT min(sal) FROM emp GROUP BY deptno);
+SELECT * FROM emp WHERE sal >= all(SELECT max(sal) FROM emp GROUP BY deptno);
+
+-- join, subquery 중요
+-- DML 
+CREATE TABLE dept_temp AS SELECT * FROM dept WHERE 1=0; --테이블 껍데기만 들고오기
+CREATE TABLE dept_temp AS SELECT * FROM dept; -- 테이블 복제
+SELECT * FROM dept_temp;
+DROP TABLE dept_temp;
+INSERT INTO dept_temp (dname, loc,deptno) values('mobile','seoul',60);
+COMMIT;
+
+--emp 복제해서 2025-09-30에 입사한 사원 입력 --홍길동
+CREATE TABLE emp_temp AS SELECT * FROM emp;
+INSERT INTO emp_temp (empno,ename,sal,mgr, hiredate,comm,deptno) 
+values(9999,'홍길동',3200, NULL,to_date('2025-09-30','YYYY-MM-DD'),NULL,20);
+SELECT * FROM emp_temp;
+COMMIT;
+
+UPDATE emp_temp SET hiredate = sysdate WHERE empno = 9999;
+SELECT * FROM emp_temp;
+ROLLBACK ;
+
+--delete 
+DELETE FROM emp_temp WHERE empno = 9999;
+COMMIT;
+
+--rollback , commit
+
+
+
 
 
 
