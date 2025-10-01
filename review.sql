@@ -68,14 +68,20 @@ SELECT empno, ename FROM emp WHERE empno = 7369; --empno가 7369인 사람
 SELECT * FROM emp WHERE empno = 7369;
 --SELECT * FROM members WHERE login_id = 'jjang051' AND login_pw = '1234';
 SELECT * FROM emp WHERE deptno = 30 AND job = 'SALESMAN'; -- &&
-SELECT * FROM emp WHERE job = 'CLERK' OR deptno = 30
-ORDER BY job, deptno;
+SELECT * FROM emp WHERE job = 'CLERK' OR deptno = 30 ORDER BY job, deptno;
 SELECT * FROM emp WHERE sal >= 3000;
 SELECT * FROM emp WHERE sal <= 3000;
 SELECT * FROM emp WHERE sal != 3000;
 SELECT * FROM emp WHERE job = 'CLERK' OR job = 'SALESMAN' OR job = 'MANAGER';
 SELECT * FROM emp WHERE job IN ('CLERK' ,'SALESMAN','MANAGER');
+SELECT * FROM emp WHERE deptno IN (10,20,30) ORDER BY deptno, sal DESC;
+SELECT * FROM emp WHERE sal >= 2000 AND sal <= 3000;
+SELECT * FROM emp WHERE sal BETWEEN 2000 AND 3000 ORDER BY sal;
 
+SELECT * FROM emp WHERE deptno NOT IN (10,20) ORDER BY deptno, sal DESC;
+SELECT * FROM emp WHERE sal NOT BETWEEN 2000 AND 3000 ORDER BY sal;
+
+--
 
 
 
